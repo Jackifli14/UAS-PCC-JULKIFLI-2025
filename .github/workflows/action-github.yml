@@ -1,0 +1,28 @@
+name: GitHub Actions to Publish Docker Image
+run-name: ${{ github.actor }} in Action 🚀
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      # Langkah untuk checkout kode repository
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      # Login ke Docker Hub
+      - name: Log in to Docker Hub
+        run: echo ${{ secrets.ACCESS_TOKEN }} | docker login -u ${{ secrets.USERNAME }} --password-stdin
+
+      # Membangun dan menandai Docker image
+      - name: Build and Tag Docker Image
+        run: |
+          docker build -t ${{ secrets.USERNAME }}/uas-pcc-julkifli-2025:v3 -f Dockerfile .
+
+      # Push image ke Docker Hub
+      - name: Push Docker Image to Docker Hub
+        run: docker push ${{ secrets.USERNAME }}/uas-pcc-julkifli-2025:v3
